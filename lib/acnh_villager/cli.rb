@@ -36,7 +36,7 @@ class AcnhVillager::CLI
 
     def list_villagers
         puts ""
-        puts "Listing featured villagers..."
+        puts "Listing Today's Featured Villagers..."
         sleep (1)
         puts ""
         @@list.each.with_index(1) do | villager, i |
@@ -64,61 +64,49 @@ class AcnhVillager::CLI
         end
     end
 
-    def select_villager(input)
+    def select_villager(letter)
         puts ""
-        search_by_letter = AcnhVillager::Villager.all.select { | villager | villager.name[0].downcase == input }.sort_by{ | villager | villager.name }
+        search_by_letter = AcnhVillager::Villager.all.select { | villager | villager.name[0].downcase == letter }.sort_by{ | villager | villager.name }
         search_by_letter.each.with_index(1) do | villager, i |
             puts "#{i}. #{villager.name}"
             @@search_list << villager
         end
-
         puts ""
         puts "Select an above number to view villager details."
+        search_again(letter)
+    end
+
+    def search_again(letter=nil)
         puts "Type 'back' to search again or type 'menu' to return to main menu."
         line
-        input_two = gets.strip.downcase
+        selection = gets.strip.downcase
+        line
         sleep(1)
-        if input_two.to_i.between?(1, @@search_list.count) 
-            villager = @@search_list.find { | villager | villager.name == @@search_list[input_two.to_i - 1].name }
+        if selection.to_i.between?(1, @@search_list.count) 
+            villager = @@search_list.find { | villager | villager.name == @@search_list[selection.to_i - 1].name }
             display_villager_details(villager)
             AcnhVillager::CLI.clear_search
             sleep(1)
             search_again
-        elsif input_two == 'menu'
-            line
+        elsif selection == 'menu'
+            AcnhVillager::CLI.clear_search
             sleep(1)
             list_villagers
             menu
-        elsif input_two == 'back'
+        elsif selection == 'back'
+            AcnhVillager::CLI.clear_search
             search_villagers
-        elsif input_two == 'exit'
-            goodbye
-        else
-            line
-            puts "Invalid input."
-            line
-            sleep(1)
-            select_villager(input)
-        end
-    end
-
-    def search_again
-        puts "Type 'back' to search again or type 'menu' to return to main menu."
-        line
-        input = gets.strip.downcase
-        line
-        sleep(1)
-        case input
-        when "back"
-            search_villagers
-        when "menu"
-            list_villagers
-            menu
-        when 'exit'
+        elsif selection == 'exit'
             goodbye
         else
             puts "Invalid input."
-            search_again
+            if letter
+                line
+                sleep(1)
+                select_villager(letter)
+            else
+                search_again
+            end
         end
     end
 
