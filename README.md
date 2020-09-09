@@ -1,8 +1,6 @@
 # AcnhVillager
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/acnh_villager`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+View detailed information on villagers from Animal Crossing New Horizons.
 
 ## Installation
 
@@ -32,7 +30,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/<github username>/acnh_villager.
+Bug reports and pull requests are welcome on GitHub at https://github.com/ellenupark/acnh_villager.
 
 
 ## License
