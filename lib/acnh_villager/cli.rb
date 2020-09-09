@@ -188,7 +188,14 @@ class AcnhVillager::CLI
 
     def goodbye
         puts ""
-        puts "Thanks for visiting!".colorize(:magenta)
+        puts "   _      _      _ ".colorize(:magenta)
+        puts "__(.)< __(.)> __(.)=".colorize(:magenta)
+        puts "\\___)  \\___)  \\___)".colorize(:magenta)
+        puts ""
+        puts "Thanks for visiting!".colorize(:cyan)
+        puts "  _      _      _".colorize(:magenta)
+        puts ">(.)__ <(.)__ =(.)__".colorize(:magenta)
+        puts " (___/  (___/  (___/".colorize(:magenta)
         puts ""
         line
         exit
