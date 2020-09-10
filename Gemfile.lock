@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    acnh_villager (0.1.0)
+    acnh_villager (0.1.1)
       bundler (~> 2.1.4)
       colorize (~> 0.8.1)
       json (~> 2.3.1)
