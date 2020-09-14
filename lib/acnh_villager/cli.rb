@@ -26,12 +26,14 @@ class AcnhVillager::CLI
         menu
     end
 
-    def line
-        puts "----------------------------------------------------------------"
-    end
-
-    def self.clear_search
-        @@search_list.clear
+    def list_featured_villagers
+        puts ""
+        puts "Listing Today's Featured Villagers..."
+        sleep (1)
+        puts ""
+        @@list.each.with_index(1) do | villager, i |
+            puts "#{i}. #{villager.name}"
+        end
     end
 
     def menu
@@ -79,15 +81,44 @@ class AcnhVillager::CLI
         line
     end
 
-    def list_featured_villagers
-        puts ""
-        puts "Listing Today's Featured Villagers..."
-        sleep (1)
-        puts ""
-        @@list.each.with_index(1) do | villager, i |
-            puts "#{i}. #{villager.name}"
+    def line
+        puts "----------------------------------------------------------------"
+    end
+
+    def restart 
+        puts "Type 'menu' to return to main menu or type 'exit' to quit."
+        line
+        input = gets.strip.downcase
+        line
+        sleep(1)
+        case input
+        when "menu"
+            list_featured_villagers
+            menu
+        when "exit"
+            goodbye
+        else
+           puts "Invalid input."
+           restart
         end
     end
+
+    def goodbye
+        puts ""
+        puts "   _      _      _ ".colorize(:magenta)
+        puts "__(.)< __(.)> __(.)=".colorize(:magenta)
+        puts "\\___)  \\___)  \\___)".colorize(:magenta)
+        puts ""
+        puts "Thanks for visiting!".colorize(:cyan)
+        puts "  _      _      _".colorize(:magenta)
+        puts ">(.)__ <(.)__ =(.)__".colorize(:magenta)
+        puts " (___/  (___/  (___/".colorize(:magenta)
+        puts ""
+        line
+        exit
+    end
+
+    # SEARCH FUNCTION   
 
     def search_by_name
         puts "Please type the first letter of your desired villager's name."
@@ -128,64 +159,35 @@ class AcnhVillager::CLI
         line
         sleep(1)
         if villager_selection.to_i.between?(1, @@search_list.count) 
-            villager = @@search_list.find { | villager | villager.name == @@search_list[villager_selection.to_i - 1].name }
+            villager = @@search_list.find { | villager | villager == @@search_list[villager_selection.to_i - 1] }
             display_villager_details(villager)
-            AcnhVillager::CLI.clear_search
+            AcnhVillager::CLI.clear_search_list
             sleep(1)
             select_searched_villager
         elsif villager_selection == 'menu'
-            AcnhVillager::CLI.clear_search
+            AcnhVillager::CLI.clear_search_list
             sleep(1)
             list_featured_villagers
             menu
         elsif villager_selection == 'back'
-            AcnhVillager::CLI.clear_search
+            AcnhVillager::CLI.clear_search_list
             search_by_name
         elsif villager_selection == 'exit'
             goodbye
         else
             puts "Invalid input."
-            if first_letter
-                AcnhVillager::CLI.clear_search
+            if first_letter # When user has not yet selected a villager to view
+                AcnhVillager::CLI.clear_search_list
                 line
                 sleep(1)
                 list_searched_villagers(first_letter)
-            else
+            else # When user is viewing villager details
                 select_searched_villager 
             end
         end
     end
 
-    def restart 
-        puts "Type 'menu' to return to main menu or type 'exit' to quit."
-        line
-        input = gets.strip.downcase
-        line
-        sleep(1)
-        case input
-        when "menu"
-            list_featured_villagers
-            menu
-        when "exit"
-            goodbye
-        else
-           puts "Invalid input."
-           restart
-        end
-    end
-
-    def goodbye
-        puts ""
-        puts "   _      _      _ ".colorize(:magenta)
-        puts "__(.)< __(.)> __(.)=".colorize(:magenta)
-        puts "\\___)  \\___)  \\___)".colorize(:magenta)
-        puts ""
-        puts "Thanks for visiting!".colorize(:cyan)
-        puts "  _      _      _".colorize(:magenta)
-        puts ">(.)__ <(.)__ =(.)__".colorize(:magenta)
-        puts " (___/  (___/  (___/".colorize(:magenta)
-        puts ""
-        line
-        exit
+    def self.clear_search_list
+        @@search_list.clear
     end
 end
