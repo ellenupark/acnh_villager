@@ -22,7 +22,7 @@ class AcnhVillager::CLI
         puts ""
         puts "Welcome to the Animal Crossing New Horizons Villager Directory!"
         sleep(1)
-        list_villagers
+        list_featured_villagers
         menu
     end
 
@@ -34,82 +34,6 @@ class AcnhVillager::CLI
         @@search_list.clear
     end
 
-    def list_villagers
-        puts ""
-        puts "Listing Today's Featured Villagers..."
-        sleep (1)
-        puts ""
-        @@list.each.with_index(1) do | villager, i |
-            puts "#{i}. #{villager.name}"
-        end
-    end
-
-    def search_villagers
-        puts "Please type the first letter of your desired villager's name."
-        line
-        input = gets.strip.downcase
-        line
-        sleep(1)
-
-        if input == 'x'
-            puts "Could not locate villager with name that begins with 'X'."
-            search_villagers
-        elsif input[/[a-z]\z/]  == input
-            select_villager(input)
-        elsif input == 'exit'
-            goodbye
-        else
-            puts "Invalid input."
-            search_villagers
-        end
-    end
-
-    def select_villager(letter)
-        puts ""
-        search_by_letter = AcnhVillager::Villager.all.select { | villager | villager.name[0].downcase == letter }.sort_by{ | villager | villager.name }
-        search_by_letter.each.with_index(1) do | villager, i |
-            puts "#{i}. #{villager.name}"
-            @@search_list << villager
-        end
-        puts ""
-        puts "Select an above number to view villager details."
-        search_again(letter)
-    end
-
-    def search_again(letter=nil)
-        puts "Type 'back' to search again or type 'menu' to return to main menu."
-        line
-        selection = gets.strip.downcase
-        line
-        sleep(1)
-        if selection.to_i.between?(1, @@search_list.count) 
-            villager = @@search_list.find { | villager | villager.name == @@search_list[selection.to_i - 1].name }
-            display_villager_details(villager)
-            AcnhVillager::CLI.clear_search
-            sleep(1)
-            search_again
-        elsif selection == 'menu'
-            AcnhVillager::CLI.clear_search
-            sleep(1)
-            list_villagers
-            menu
-        elsif selection == 'back'
-            AcnhVillager::CLI.clear_search
-            search_villagers
-        elsif selection == 'exit'
-            goodbye
-        else
-            puts "Invalid input."
-            if letter
-                line
-                sleep(1)
-                select_villager(letter)
-            else
-                search_again
-            end
-        end
-    end
-
     def menu
         puts ""
         puts "Select an above number to view villager details."
@@ -119,21 +43,20 @@ class AcnhVillager::CLI
         line
         sleep(1)
         if input.to_i.between?(1, 10) 
-            villager = AcnhVillager::Villager.all.find { | villager | villager.name == @@list[input.to_i - 1].name }
+            villager = AcnhVillager::Villager.all.find { | villager | villager == @@list[input.to_i - 1] }
             display_villager_details(villager)
             sleep(1)
             restart
         elsif input == 'search'
-            search_villagers
+            search_by_name
             line
-            search_villagers
         elsif input == 'exit'
             goodbye
         else
             puts "Invalid input."
             line
             sleep(1)
-            list_villagers
+            list_featured_villagers
             menu
         end
     end
@@ -156,6 +79,83 @@ class AcnhVillager::CLI
         line
     end
 
+    def list_featured_villagers
+        puts ""
+        puts "Listing Today's Featured Villagers..."
+        sleep (1)
+        puts ""
+        @@list.each.with_index(1) do | villager, i |
+            puts "#{i}. #{villager.name}"
+        end
+    end
+
+    def search_by_name
+        puts "Please type the first letter of your desired villager's name."
+        line
+        first_letter = gets.strip.downcase
+        line
+        sleep(1)
+
+        if first_letter == 'x'
+            puts "Could not locate villager with name that begins with 'X'."
+            search_by_name
+        elsif first_letter[/[a-z]\z/]  == first_letter
+            list_searched_villagers(first_letter)
+        elsif first_letter == 'exit'
+            goodbye
+        else
+            puts "Invalid input."
+            search_by_name
+        end
+    end
+
+    def list_searched_villagers(first_letter)
+        puts ""
+        search_by_letter = AcnhVillager::Villager.all.select { | villager | villager.name[0].downcase == first_letter }.sort_by{ | villager | villager.name }
+        search_by_letter.each.with_index(1) do | villager, i |
+            puts "#{i}. #{villager.name}"
+            @@search_list << villager
+        end
+        puts ""
+        puts "Select an above number to view villager details."
+        select_searched_villager(first_letter)
+    end
+
+    def select_searched_villager(first_letter=nil)
+        puts "Type 'back' to search again or type 'menu' to return to main menu."
+        line
+        villager_selection = gets.strip.downcase
+        line
+        sleep(1)
+        if villager_selection.to_i.between?(1, @@search_list.count) 
+            villager = @@search_list.find { | villager | villager.name == @@search_list[villager_selection.to_i - 1].name }
+            display_villager_details(villager)
+            AcnhVillager::CLI.clear_search
+            sleep(1)
+            select_searched_villager
+        elsif villager_selection == 'menu'
+            AcnhVillager::CLI.clear_search
+            sleep(1)
+            list_featured_villagers
+            menu
+        elsif villager_selection == 'back'
+            AcnhVillager::CLI.clear_search
+            search_by_name
+        elsif villager_selection == 'exit'
+            goodbye
+        else
+            puts "Invalid input."
+            if first_letter
+                AcnhVillager::CLI.clear_search
+                line
+                sleep(1)
+                list_searched_villagers(first_letter)
+            else
+                select_searched_villager 
+            end
+        end
+    end
+
     def restart 
         puts "Type 'menu' to return to main menu or type 'exit' to quit."
         line
@@ -164,7 +164,7 @@ class AcnhVillager::CLI
         sleep(1)
         case input
         when "menu"
-            list_villagers
+            list_featured_villagers
             menu
         when "exit"
             goodbye
