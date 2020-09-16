@@ -5,8 +5,8 @@ class AcnhVillager::CLI
     def initialize
         AcnhVillager::API.scrape_villagers
         until @@list.length == 10
-            random_villager = AcnhVillager::Villager.all[rand(1..AcnhVillager::Villager.all.count - 1)]
-            @@list << random_villager if !@@list.include?(random_villager)
+            villager = AcnhVillager::Villager.generate_random_villager
+            @@list << villager if !@@list.include?(villager)
         end
     end
 
@@ -36,23 +36,25 @@ class AcnhVillager::CLI
         end
     end
 
+    def find_and_display_villager(villager_list, input)
+        display_villager_details(villager_list.find { | villager | villager == villager_list[input.to_i - 1] })
+    end
+
     def menu
         puts ""
         puts "Select an above number to view villager details."
         puts "Type 'search' to look up a specific villager or type 'exit' to quit."
         line
-        input = gets.strip.downcase
+        user_input = gets.strip.downcase
         line
         sleep(1)
-        if input.to_i.between?(1, 10) 
-            villager = AcnhVillager::Villager.all.find { | villager | villager == @@list[input.to_i - 1] }
-            display_villager_details(villager)
-            sleep(1)
+        if user_input.to_i.between?(1, 10) 
+            find_and_display_villager(@@list, user_input)
             restart
-        elsif input == 'search'
+        elsif user_input == 'search'
             search_by_name
             line
-        elsif input == 'exit'
+        elsif user_input == 'exit'
             goodbye
         else
             puts "Invalid input."
@@ -88,10 +90,10 @@ class AcnhVillager::CLI
     def restart 
         puts "Type 'menu' to return to main menu or type 'exit' to quit."
         line
-        input = gets.strip.downcase
+        user_input = gets.strip.downcase
         line
         sleep(1)
-        case input
+        case user_input
         when "menu"
             list_featured_villagers
             menu
@@ -142,8 +144,7 @@ class AcnhVillager::CLI
 
     def list_searched_villagers(first_letter)
         puts ""
-        search_by_letter = AcnhVillager::Villager.all.select { | villager | villager.name[0].downcase == first_letter }.sort_by{ | villager | villager.name }
-        search_by_letter.each.with_index(1) do | villager, i |
+        AcnhVillager::Villager.search_villagers_by_name(first_letter).each.with_index(1) do | villager, i |
             puts "#{i}. #{villager.name}"
             @@search_list << villager
         end
@@ -155,24 +156,23 @@ class AcnhVillager::CLI
     def select_searched_villager(first_letter=nil)
         puts "Type 'back' to search again or type 'menu' to return to main menu."
         line
-        villager_selection = gets.strip.downcase
+        user_input = gets.strip.downcase
         line
         sleep(1)
-        if villager_selection.to_i.between?(1, @@search_list.count) 
-            villager = @@search_list.find { | villager | villager == @@search_list[villager_selection.to_i - 1] }
-            display_villager_details(villager)
+        if user_input.to_i.between?(1, @@search_list.count) 
+            find_and_display_villager(@@search_list, user_input)
             AcnhVillager::CLI.clear_search_list
             sleep(1)
             select_searched_villager
-        elsif villager_selection == 'menu'
+        elsif user_input == 'menu'
             AcnhVillager::CLI.clear_search_list
             sleep(1)
             list_featured_villagers
             menu
-        elsif villager_selection == 'back'
+        elsif user_input == 'back'
             AcnhVillager::CLI.clear_search_list
             search_by_name
-        elsif villager_selection == 'exit'
+        elsif user_input == 'exit'
             goodbye
         else
             puts "Invalid input."
