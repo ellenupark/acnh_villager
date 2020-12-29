@@ -1,7 +1,8 @@
 # AcnhVillager
 
 ## Description
-View detailed information on villagers from Animal Crossing New Horizons.
+
+ACNH Villager is a Command Line Interface (CLI) that provides detailed information on villagers from Animal Crossing New Horizons. It is built with object oriented Ruby and utilizes data from an outside API.
 
 ## Installation
 
