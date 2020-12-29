@@ -4,6 +4,10 @@
 
 ACNH Villager is a Command Line Interface (CLI) that provides detailed information on villagers from Animal Crossing New Horizons. It is built with object oriented Ruby and utilizes data from an outside API.
 
+## Usage
+
+Navigate to the root directory. Execute the bin file `./bin/acnh_villager`. A list of villagers will be displayed. There is also the option to search for a specific villager.  
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -19,10 +23,6 @@ And then execute:
 Or install it yourself as:
 
     $ gem install acnh_villager
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Development
 
