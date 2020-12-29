@@ -6,8 +6,7 @@ ACNH Villager is a Command Line Interface (CLI) that provides detailed informati
 
 ## Usage
 
-Navigate to the root directory. Execute the bin file `./bin/acnh_villager`. A list of villagers will be displayed. There is also the option to search for a specific villager.  
-
+Navigate to the root directory. Then, execute the bin file `./bin/acnh_villager`. A list of villagers will be displayed. 
 <img src="./images/main.png" width="600">
 
 Select a villager by number to view detailed information.
