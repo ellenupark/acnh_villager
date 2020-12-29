@@ -14,6 +14,8 @@ Select a villager by number to view detailed information.
 
 ![ACNH_Villager Villager Details](./images/details.png?raw=true)
 
+<img src="./images/details.png" width="200">
+
 ## Installation
 
 Add this line to your application's Gemfile:
